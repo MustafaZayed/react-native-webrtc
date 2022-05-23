@@ -18,6 +18,7 @@
 
 #import "WebRTCModule.h"
 #import "WebRTCModule+RTCPeerConnection.h"
+#import <WebRTC/RTCAudioSession.h>
 
 @interface WebRTCModule ()
 @end
@@ -48,6 +49,7 @@
 
 - (instancetype)init
 {
+    RTCAudioSession.sharedSession().useManualAudio = true
     return [self initWithEncoderFactory:nil decoderFactory:nil];
 }
 
@@ -116,6 +118,18 @@ RCT_EXPORT_MODULE();
     kEventDataChannelReceiveMessage,
     kEventMediaStreamTrackMuteChanged
   ];
+}
+
+- (void)provider:(CXProvider *)provider didActivateAudioSession:(AVAudioSession *)audioSession
+{
+  RTCAudioSession.sharedSession().didActivecated(audioSession)
+  RTCAudioSession.sharedSession().isAudioEnabled = true
+}
+
+- (void)provider:(CXProvider *)provider didDeactivateAudioSession:(AVAudioSession *)audioSession
+{
+  RTCAudioSession.sharedSession().didDeactivecated(audioSession)
+  RTCAudioSession.sharedSession().isAudioEnabled = false
 }
 
 @end
